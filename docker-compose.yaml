@@ -1,0 +1,38 @@
+# docker-compose.yml
+version: "3"
+services:
+  app:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://postgress_admin:postgress_pass@postgres:5432/db
+      NODE_ENV: development
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - ghabooli   
+
+  postgres:
+    image: postgres:10.4
+    environment:
+      POSTGRES_USER: postgress_admin
+      POSTGRES_PASSWORD: postgress_pass
+      POSTGRES_DB: db
+
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    
+    ports:
+      - "127.0.0.1:35432:5432"
+    networks:
+      - ghabooli    
+
+networks:
+  ghabooli:
+    driver: bridge        
